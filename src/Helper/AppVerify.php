@@ -6,11 +6,10 @@
  * @Copyright：Copyright (c) 2022 - 2035, 河北九米电子科技有限公司, Inc.
  */
 
-
 declare(strict_types=1);
 namespace Jiumi\Helper;
 
-use Xmo\JWTAuth\JWT;
+use Jiumikeji\JWTAuth\JWT;
 use Psr\SimpleCache\InvalidArgumentException;
 
 class AppVerify

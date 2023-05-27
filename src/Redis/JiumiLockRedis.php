@@ -6,7 +6,6 @@
  * @Copyright：Copyright (c) 2022 - 2035, 河北九米电子科技有限公司, Inc.
  */
 
-
 namespace Jiumi\Redis;
 
 use Hyperf\Coroutine\Coroutine;
@@ -53,8 +52,8 @@ class JiumiLockRedis extends AbstractRedis implements JiumiRedisInterface
         try {
             call_user_func($closure);
         } catch (\Throwable $e) {
-            logger('Redis Lock')->error(t('Jiumiadmin.redis_lock_error'));
-            throw new NormalStatusException(t('Jiumiadmin.redis_lock_error'), 500);
+            logger('Redis Lock')->error(t('jiumiadmin.redis_lock_error'));
+            throw new NormalStatusException(t('jiumiadmin.redis_lock_error'), 500);
         } finally {
             $this->freed($key);
         }

@@ -6,7 +6,6 @@
  * @Copyright：Copyright (c) 2022 - 2035, 河北九米电子科技有限公司, Inc.
  */
 
-
 declare(strict_types=1);
 namespace Jiumi\Middlewares;
 
@@ -56,7 +55,7 @@ class HttpCoreMiddleware extends \Hyperf\HttpServer\CoreMiddleware
         $format = [
             'success' => false,
             'code'    => JiumiCode::NOT_FOUND,
-            'message' => t('Jiumiadmin.not_found')
+            'message' => t('jiumiadmin.not_found')
         ];
         return $this->response()->withHeader('Server', 'JiumiAdmin')
             ->withAddedHeader('content-type', 'application/json; charset=utf-8')
@@ -79,7 +78,7 @@ class HttpCoreMiddleware extends \Hyperf\HttpServer\CoreMiddleware
         $format = [
             'success' => false,
             'code'    => JiumiCode::METHOD_NOT_ALLOW,
-            'message' => t('Jiumiadmin.allow_method', ['method' => implode(',', $methods)])
+            'message' => t('jiumiadmin.allow_method', ['method' => implode(',', $methods)])
         ];
         return $this->response()->withHeader('Server', 'JiumiAdmin')
             ->withAddedHeader('content-type', 'application/json; charset=utf-8')

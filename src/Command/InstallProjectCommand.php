@@ -28,7 +28,7 @@ class InstallProjectCommand extends JiumiCommand
      * 安装命令
      * @var string|null
      */
-    protected ?string $name = 'Jiumi:install';
+    protected ?string $name = 'jiumi:install';
 
     protected const CONSOLE_GREEN_BEGIN = "\033[32;5;1m";
     protected const CONSOLE_RED_BEGIN = "\033[31;5;1m";
@@ -38,11 +38,12 @@ class InstallProjectCommand extends JiumiCommand
 
     protected array $redis = [];
 
+
     public function configure()
     {
         parent::configure();
-        $this->setHelp('run "php bin/hyperf.php Jiumi:install" install JiumiAdmin system');
-        $this->setDescription('JiumiAdmin系统安装命令');
+        $this->setHelp('run "php bin/hyperf.php jiumi:install" install JiumiAdmin system');
+        $this->setDescription('JiumiAdmin system install command');
 
         $this->addOption('option', '-o', InputOption::VALUE_OPTIONAL, 'input "-o reset" is re install JiumiAdmin');
     }
@@ -65,7 +66,7 @@ class InstallProjectCommand extends JiumiCommand
                 // 设置数据库
                 $this->setDataBaseInformationAndRedis();
 
-                $this->line("\n\nReset the \".env\" file. 请重新启动服务，然后运行\nthe installation命令继续安装.", "info");
+                $this->line("\n\nReset the \".env\" file. Please restart the service before running \nthe installation command to continue the installation.", "info");
             } else if (file_exists(BASE_PATH . '/.env') && $this->confirm('Do you want to continue with the installation program?', true)) {
 
                 // 安装本地模块
@@ -100,7 +101,7 @@ class InstallProjectCommand extends JiumiCommand
 
         // 重新安装
         if ($option === 'reset') {
-            $this->line('重装未完成...', 'error');
+            $this->line('Reinstallation is not complete...', 'error');
         }
     }
 
@@ -143,7 +144,7 @@ class InstallProjectCommand extends JiumiCommand
         // 设置数据库
         if ($dbAnswer) {
             $dbchar = $this->ask('请输入数据库字符集，默认值:', 'utf8mb4');
-            $dbname = $this->ask('请输入数据库名称，默认值:', 'Jiumiadmin');
+            $dbname = $this->ask('请输入数据库名称，默认值:', 'jiumiadmin');
             $dbhost = $this->ask('请输入数据库主机，默认值:', '127.0.0.1');
             $dbport = $this->ask('请输入数据库主机端口，默认值:', '3306');
             $prefix = $this->ask('请输入表前缀，默认值:', 'jiumi_');
@@ -155,7 +156,7 @@ class InstallProjectCommand extends JiumiCommand
                 if ($i === 3) {
                     $dbpass = $this->ask('请输入数据库密码。按“enter”3次，不设置密码');
                 } else {
-                    $dbpass = $this->ask(sprintf('如果您没有设置数据库密码，请重试按“enter” %d 次', $i));
+                    $dbpass = $this->ask(sprintf('如果您没有设置数据库密码，请按“enter”再试一次 %d 次', $i));
                 }
                 if (!empty($dbpass)) {
                     break;
@@ -175,7 +176,7 @@ class InstallProjectCommand extends JiumiCommand
             ];
         }
 
-        $redisAnswer = $this->confirm('Do you need to set Redis information?', true);
+        $redisAnswer = $this->confirm('是否需要设置Redis信息?', true);
 
         // 设置Redis
         if ($redisAnswer) {
@@ -260,7 +261,7 @@ class InstallProjectCommand extends JiumiCommand
                 $this->line($this->getGreenText(sprintf('"%s" 数据库创建成功', $this->database['dbname'])));
                 file_put_contents(BASE_PATH . '/.env', $envContent);
             } else {
-                $this->line($this->getRedText(sprintf('创建数据库 "%s". 失败。请手动创建', $this->database['dbname'])));
+                $this->line($this->getRedText(sprintf('创建数据库失败 "%s". 请手动创建', $this->database['dbname'])));
             }
         } catch (\RuntimeException $e) {
             $this->line($this->getRedText($e->getMessage()));
@@ -273,24 +274,42 @@ class InstallProjectCommand extends JiumiCommand
      */
     protected function installLocalModule()
     {
-        /* @var Jiumi $Jiumi */
-        $this->line("即将开始安装本地模块...\n", 'comment');
-        $Jiumi = make(Jiumi::class);
-        $modules = $Jiumi->getModuleInfo();
+        /* @var Jiumi $jiumi */
+        $this->line("安装本地模块即将开始...\n", 'comment');
+        $jiumi = make(Jiumi::class);
+        $modules = $jiumi->getModuleInfo();
         foreach ($modules as $name => $info) {
-            $this->call('Jiumi:migrate-run', ['name' => $name, '--force' => 'true']);
+            $this->call('jiumi:migrate-run', ['name' => $name, '--force' => 'true']);
             if ($name === 'System') {
                 $this->initUserData();
             }
-            $this->call('Jiumi:seeder-run',  ['name' => $name, '--force' => 'true']);
+            $this->call('jiumi:seeder-run',  ['name' => $name, '--force' => 'true']);
             $this->line($this->getGreenText(sprintf('"%s" module install successfully', $name)));
         }
     }
 
     protected function setOthers()
     {
-        $this->line(PHP_EOL . ' JiumiAdmin 设置其他项...' . PHP_EOL, 'comment');
-        $this->call('Jiumi:update');
+        $this->line(PHP_EOL . ' JiumiAdmin set others items...' . PHP_EOL, 'comment');
+        $this->call('jiumi:update');
+        $this->call('jiumi:jwt-gen', [ '--jwtSecret' => 'JWT_SECRET' ]);
+        $this->call('jiumi:jwt-gen', [ '--jwtSecret' => 'JWT_API_SECRET' ]);
+
+        if (! file_exists(BASE_PATH . '/config/autoload/jiumiadmin.php')) {
+            $this->call('vendor:publish', [ 'package' => 'jiumikeji/jiumi' ]);
+        }
+
+        $downloadFrontCode = $this->confirm('Do you downloading the front-end code to "./web" directory?', true);
+
+        // 下载前端代码
+        if ($downloadFrontCode) {
+            $this->line(PHP_EOL . ' Now about to start downloading the front-end code' . PHP_EOL, 'comment');
+            if (shell_exec('which git')) {
+                system('git clone https://gitee.com/jiumiadmin/jiumiadmin-vue.git ./web/');
+            } else {
+                $this->warn('您的服务器没有安装“git”命令，将跳过下载前端项目');
+            }
+        }
     }
 
     protected function initUserData()
@@ -299,15 +318,18 @@ class InstallProjectCommand extends JiumiCommand
         Db::table('system_user')->truncate();
         Db::table('system_role')->truncate();
         Db::table('system_user_role')->truncate();
+        if (\Hyperf\Database\Schema\Schema::hasTable('system_user_dept')) {
+            Db::table('system_user_dept')->truncate();
+        }
 
         // 创建超级管理员
         Db::table("system_user")->insert([
             'id' => env('SUPER_ADMIN', 1),
-            'username' => 'jiumiAdmin',
+            'username' => 'superAdmin',
             'password' => password_hash('admin123', PASSWORD_DEFAULT),
             'user_type' => '100',
-            'nickname' => '创始人',
-            'email' => 'admin@adminJiumi.com',
+            'nickname' => '河北九米电子科技有限公司',
+            'email' => '10056446@qq.com',
             'phone' => '13785208521',
             'signed' => '九米科技成立于2013年，是致力于应用软件、平台系统类软件的定制开发及互联网趋势研究的技术服务型企业',
             'dashboard' => 'statistics',
@@ -321,7 +343,7 @@ class InstallProjectCommand extends JiumiCommand
         Db::table('system_role')->insert([
             'id' => env('ADMIN_ROLE', 1),
             'name' => '超级管理员（创始人）',
-            'code' => 'jiumiAdmin',
+            'code' => 'superAdmin',
             'data_scope' => 0,
             'sort' => 0,
             'created_by' => env('SUPER_ADMIN', 0),
@@ -340,7 +362,7 @@ class InstallProjectCommand extends JiumiCommand
     protected function finish(): void
     {
         $i = 5;
-        $this->output->write(PHP_EOL . $this->getGreenText('The installation is almost complete'), false);
+        $this->output->write(PHP_EOL . $this->getGreenText('安装差不多完成了'), false);
         while ($i > 0) {
             $this->output->write($this->getGreenText('.'), false);
             $i--;
@@ -348,8 +370,8 @@ class InstallProjectCommand extends JiumiCommand
         }
         $this->line(PHP_EOL . sprintf('%s
 JiumiAdmin Version: %s
-默认用户名: jiumiAdmin
-默认密码: admin123', $this->getInfo(), Jiumi::getVersion()), 'comment');
+default username: superAdmin
+default password: admin123', $this->getInfo(), Jiumi::getVersion()), 'comment');
     }
 
     /**

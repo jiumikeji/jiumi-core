@@ -42,10 +42,10 @@ class ModuleGenerator extends JiumiGenerator
 
         $this->moduleInfo['name'] = ucfirst($this->moduleInfo['name']);
 
-        $Jiumi = new Jiumi;
-        $Jiumi->scanModule();
+        $jiumi = new Jiumi;
+        $jiumi->scanModule();
 
-        if (! empty($Jiumi->getModuleInfo($this->moduleInfo['name']))) {
+        if (! empty($jiumi->getModuleInfo($this->moduleInfo['name']))) {
             throw new \RuntimeException('同名模块已存在');
         }
 

@@ -30,7 +30,7 @@ class JiumiSeederRun extends BaseCommand
      *
      * @var string|null
      */
-    protected ?string $name = 'Jiumi:seeder-run';
+    protected ?string $name = 'jiumi:seeder-run';
 
     /**
      * The console command description.
@@ -58,7 +58,7 @@ class JiumiSeederRun extends BaseCommand
 
         $this->seed = $seed;
 
-        $this->setDescription('The run seeder class of JiumiAdmin module');
+        $this->setDescription('九米框架模块运行类');
     }
 
     /**

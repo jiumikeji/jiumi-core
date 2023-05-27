@@ -52,7 +52,7 @@ class ResubmitAspect extends AbstractAspect
 
         if ($lockRedis->check($key)) {
             $lockRedis = null;
-            throw new NormalStatusException($resubmit->message ?: t('Jiumiadmin.resubmit'), 500);
+            throw new NormalStatusException($resubmit->message ?: t('jiumiadmin.resubmit'), 500);
         }
 
         $lockRedis->lock($key, $resubmit->second);

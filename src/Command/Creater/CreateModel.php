@@ -6,7 +6,6 @@
  * @Copyright：Copyright (c) 2022 - 2035, 河北九米电子科技有限公司, Inc.
  */
 
-
 declare(strict_types = 1);
 namespace Jiumi\Command\Creater;
 
@@ -23,18 +22,18 @@ use Symfony\Component\Console\Input\InputOption;
 #[Command]
 class CreateModel extends JiumiCommand
 {
-    protected ?string $name = 'Jiumi:model-gen';
+    protected ?string $name = 'jiumi:model-gen';
 
     public function configure()
     {
         parent::configure();
-        $this->setHelp('run "php bin/hyperf.php Jiumi:model-gen <--module | -M <module>> [--table | -T [table]]"');
-        $this->setDescription('Generate model to module according to data table');
+        $this->setHelp('run "php bin/hyperf.php jiumi:model-gen <--module | -M <module>> [--table | -T [table]]"');
+        $this->setDescription('根据数据表生成模型到模块');
     }
 
     public function handle()
     {
-        $Jiumi = make(Jiumi::class);
+        $jiumi = make(Jiumi::class);
         $module = $this->input->getOption('module');
         if ($module) {
             $module = ucfirst(trim($this->input->getOption('module')));
@@ -49,7 +48,7 @@ class CreateModel extends JiumiCommand
             $this->line('Missing parameter <--module < module_name>>', 'error');
         }
 
-        $moduleInfos = $Jiumi->getModuleInfo();
+        $moduleInfos = $jiumi->getModuleInfo();
 
         if (isset($moduleInfos[$module])) {
             $info = $moduleInfos[$module];
@@ -91,8 +90,8 @@ class CreateModel extends JiumiCommand
     protected function getOptions(): array
     {
         return [
-            ['module', '-M', InputOption::VALUE_REQUIRED, 'Please enter the module to be generated'],
-            ['table', '-T', InputOption::VALUE_OPTIONAL, 'Which table you want to associated with the Model.']
+            ['module', '-M', InputOption::VALUE_REQUIRED, '请输入要生成的模块'],
+            ['table', '-T', InputOption::VALUE_OPTIONAL, '您希望将哪个表与模型关联.']
         ];
     }
 }

@@ -39,7 +39,7 @@ class SaveAspect extends AbstractAspect
     {
         $instance = $proceedingJoinPoint->getInstance();
 
-        if (config('Jiumiadmin.data_scope_enabled')) {
+        if (config('jiumiadmin.data_scope_enabled')) {
             try {
                 $user = user();
                 // 设置创建人

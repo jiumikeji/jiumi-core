@@ -30,9 +30,9 @@ class ModuleCommand extends JiumiCommand
      * 安装命令
      * @var string|null
      */
-    protected ?string $name = 'Jiumi:module';
+    protected ?string $name = 'jiumi:module';
 
-    protected Jiumi $Jiumi;
+    protected Jiumi $jiumi;
 
     protected Migrator $migrator;
 
@@ -45,9 +45,9 @@ class ModuleCommand extends JiumiCommand
     public function configure()
     {
         parent::configure();
-        $this->Jiumi = make(Jiumi::class);
-        $this->setHelp('run "php bin/hyperf.php Jiumi:module --name cms --option install"');
-        $this->setDescription('安装JiumiAdmin模块命令');
+        $this->jiumi = make(Jiumi::class);
+        $this->setHelp('run "php bin/hyperf.php jiumi:module --name cms --option install"');
+        $this->setDescription('install command of module JiumiAdmin');
         $this->addOption(
             'option', null, InputOption::VALUE_OPTIONAL,
             'input "--option list" show module list, "-option install" install module or "-option uninstall" uninstall module',
@@ -66,7 +66,7 @@ class ModuleCommand extends JiumiCommand
     {
         $name = $this->input->getOption('name');
         $option = $this->input->getOption('option');
-        $modules = $this->Jiumi->getModuleInfo();
+        $modules = $this->jiumi->getModuleInfo();
 
         // 模块名不能叫list，list是展示模块列表
         if ($option === 'list') {
@@ -92,13 +92,13 @@ class ModuleCommand extends JiumiCommand
         // other module
         if (!empty($name) && isset($modules[$name])) {
             if (empty($option)) {
-                $this->line($this->getRedText('请输入模块的操作命令: -o install or -o uninstall'));
+                $this->line($this->getRedText('请输入对应模块的操作命令: -o install or -o uninstall'));
                 exit;
             }
 
             if ($option === 'install') {
-                $this->call('Jiumi:migrate-run', ['name' => $name, '--force' => 'true']);
-                $this->call('Jiumi:seeder-run',  ['name' => $name, '--force' => 'true']);
+                $this->call('jiumi:migrate-run', ['name' => $name, '--force' => 'true']);
+                $this->call('jiumi:seeder-run',  ['name' => $name, '--force' => 'true']);
                 $this->line(
                     sprintf(" \"%s\" module install complete, Please run it again \"%s\" command! ",
                         $this->getGreenText($name),
@@ -109,7 +109,7 @@ class ModuleCommand extends JiumiCommand
 
             if ($option === 'uninstall') {
                 $input = ucfirst($name) . ' uninstall';
-                $answer = $this->ask(sprintf("You are now ready to unload the module for safety. Please input: %s", $this->getRedText($input)));
+                $answer = $this->ask(sprintf("为了安全起见，现在可以卸载模块了。请输入: %s", $this->getRedText($input)));
                 if ($input !== $answer) {
                     $this->line('Input error');
                     exit;
@@ -130,10 +130,10 @@ class ModuleCommand extends JiumiCommand
 
                 $service->deleteModule($name);
 
-                $this->line(sprintf("卸载完成，请再次运行 \"%s\" 命令! ",$this->getGreenText('php bin/hyperf.php start')));
+                $this->line(sprintf("卸载完成，请重新运行 \"%s\" 命令! ",$this->getGreenText('php bin/hyperf.php start')));
             }
         } else {
-            $this->line($this->getRedText(sprintf('The "%s" 模块不存在....', $name)));
+            $this->line($this->getRedText(sprintf('The "%s" module does not exist....', $name)));
         }
     }
 

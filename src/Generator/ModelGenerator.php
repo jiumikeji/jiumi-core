@@ -75,7 +75,7 @@ class ModelGenerator extends JiumiGenerator implements CodeGenerator
         $this->filesystem->exists($path) || $this->filesystem->makeDirectory($path, 0755, true, true);
 
         $command = [
-            'command'  => 'Jiumi:model-gen',
+            'command'  => 'jiumi:model-gen',
             '--module' => $this->model->module_name,
             '--table'  => $this->model->table_name
         ];

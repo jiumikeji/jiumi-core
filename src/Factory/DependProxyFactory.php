@@ -39,10 +39,10 @@ class DependProxyFactory
 
          if ($container->has($name)) {
              $isLogger && logger()->info(
-                 sprintf('Dependencies [%s] Injection to the [%s] successfully.', $definition, $name)
+                 sprintf('依赖项 [%s] 注入 [%s] 成功.', $definition, $name)
              );
          } else {
-             $isLogger && logger()->warning(sprintf('Dependencies [%s] Injection to the [%s] failed.', $definition, $name));
+             $isLogger && logger()->warning(sprintf('依赖项 [%s] 注入 [%s] 失败.', $definition, $name));
          }
     }
 }

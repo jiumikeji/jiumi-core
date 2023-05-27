@@ -42,7 +42,7 @@ class UpdateAspect extends AbstractAspect
         // 更新更改人
         if ($instance instanceof JiumiModel &&
             in_array('updated_by', $instance->getFillable()) &&
-            config('Jiumiadmin.data_scope_enabled') &&
+            config('jiumiadmin.data_scope_enabled') &&
             container()->get(JiumiRequest::class)->getHeaderLine('authorization')
         ) {
             try {

@@ -5,6 +5,7 @@
  * @Link   http://www.hebei9.cn
  * @Copyright：Copyright (c) 2022 - 2035, 河北九米电子科技有限公司, Inc.
  */
+
 declare(strict_types=1);
 namespace Jiumi\Command;
 
@@ -18,7 +19,7 @@ use Jiumi\JiumiCommand;
 #[Command]
 class JiumiAdmin extends JiumiCommand
 {
-    protected ?string $name = 'Jiumi';
+    protected ?string $name = 'jiumi';
 
     public function configure()
     {
@@ -30,8 +31,8 @@ class JiumiAdmin extends JiumiCommand
      */
     public function handle()
     {
-        $result = shell_exec('php ' . BASE_PATH . '/bin/hyperf.php | grep Jiumi');
+        $result = shell_exec('php ' . BASE_PATH . '/bin/hyperf.php | grep jiumi');
         $this->line($this->getInfo(), 'comment');
-        $this->line(preg_replace('/\s+Jiumi\s+/', '', $result), 'info');
+        $this->line(preg_replace('/\s+jiumi\s+/', '', $result), 'info');
     }
 }

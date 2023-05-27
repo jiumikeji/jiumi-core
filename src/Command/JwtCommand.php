@@ -25,12 +25,12 @@ class JwtCommand extends JiumiCommand
      * 生成JWT密钥命令
      * @var string|null
      */
-    protected ?string $name = 'Jiumi:jwt-gen';
+    protected ?string $name = 'jiumi:jwt-gen';
 
     public function configure()
     {
         parent::configure();
-        $this->setHelp('run "php bin/hyperf.php Jiumi:gen-jwt" create the new jwt secret');
+        $this->setHelp('run "php bin/hyperf.php jiumi:gen-jwt" create the new jwt secret');
         $this->setDescription('JiumiAdmin system gen jwt command');
     }
 
@@ -70,7 +70,7 @@ class JwtCommand extends JiumiCommand
     protected function getOptions(): array
     {
         return [
-            ['jwtSecret', '', InputOption::VALUE_REQUIRED, 'Please enter the jwtSecret to be generated'],
+            ['jwtSecret', '', InputOption::VALUE_REQUIRED, '请输入要生成的jwtSecret'],
         ];
     }
 

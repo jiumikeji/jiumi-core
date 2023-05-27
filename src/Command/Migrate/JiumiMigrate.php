@@ -40,8 +40,8 @@ class JiumiMigrate extends BaseCommand
     public function __construct(JiumiMigrationCreator $creator)
     {
 
-        parent::__construct('Jiumi:migrate-gen');
-        $this->setDescription('Generate a new JiumiAdmin module migration file');
+        parent::__construct('jiumi:migrate-gen');
+        $this->setDescription('生成一个新的九米框架模块迁移文件');
         $this->creator = $creator;
     }
 
@@ -100,11 +100,11 @@ class JiumiMigrate extends BaseCommand
     protected function getOptions(): array
     {
         return [
-            ['module', '-M', InputOption::VALUE_REQUIRED, 'Please enter the module to be generated'],
-            ['create', null, InputOption::VALUE_OPTIONAL, 'The table to be created'],
-            ['table', null, InputOption::VALUE_OPTIONAL, 'The table to migrate'],
-            ['path', null, InputOption::VALUE_OPTIONAL, 'The location where the migration file should be created'],
-            ['realpath', null, InputOption::VALUE_NONE, 'Indicate any provided migration file paths are pre-resolved absolute paths'],
+            ['module', '-M', InputOption::VALUE_REQUIRED, '请输入要生成的模块'],
+            ['create', null, InputOption::VALUE_OPTIONAL, '要创建的表'],
+            ['table', null, InputOption::VALUE_OPTIONAL, '要迁移的表'],
+            ['path', null, InputOption::VALUE_OPTIONAL, '应该创建迁移文件的位置'],
+            ['realpath', null, InputOption::VALUE_NONE, '指出任何提供的迁移文件路径都是预先解析的绝对路径'],
         ];
     }
 
@@ -140,7 +140,7 @@ class JiumiMigrate extends BaseCommand
     }
 
     /**
-     * DeterJiumi if the given path(s) are pre-resolved "real" paths.
+     * Deterjiumi if the given path(s) are pre-resolved "real" paths.
      */
     protected function usingRealPath(): bool
     {

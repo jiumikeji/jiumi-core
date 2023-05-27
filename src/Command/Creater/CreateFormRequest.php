@@ -6,7 +6,6 @@
  * @Copyright：Copyright (c) 2022 - 2035, 河北九米电子科技有限公司, Inc.
  */
 
-
 declare(strict_types=1);
 namespace Jiumi\Command\Creater;
 
@@ -23,14 +22,14 @@ use Symfony\Component\Console\Input\InputArgument;
 #[Command]
 class CreateFormRequest extends JiumiCommand
 {
-    protected ?string $name = 'Jiumi:request-gen';
+    protected ?string $name = 'jiumi:request-gen';
 
     protected string $module;
 
     public function configure()
     {
         parent::configure();
-        $this->setHelp('run "php bin/hyperf.php Jiumi:module <module_name> <name>"');
+        $this->setHelp('run "php bin/hyperf.php jiumi:module <module_name> <name>"');
         $this->setDescription('Generate validate form request class file');
         $this->addArgument(
             'module_name', InputArgument::REQUIRED,

@@ -6,7 +6,6 @@
  * @Copyright：Copyright (c) 2022 - 2035, 河北九米电子科技有限公司, Inc.
  */
 
-
 use App\System\Vo\QueueMessageVo;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Logger\LoggerFactory;
@@ -123,13 +122,13 @@ if (! function_exists('t')) {
     }
 }
 
-if (! function_exists('Jiumi_collect')) {
+if (! function_exists('jiumi_collect')) {
     /**
      * 创建一个Jiumi的集合类
      * @param null|mixed $value
      * @return \Jiumi\JiumiCollection
      */
-    function Jiumi_collect($value = null): \Jiumi\JiumiCollection
+    function jiumi_collect($value = null): \Jiumi\JiumiCollection
     {
         return new \Jiumi\JiumiCollection($value);
     }

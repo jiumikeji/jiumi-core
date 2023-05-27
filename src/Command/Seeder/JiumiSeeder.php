@@ -38,7 +38,7 @@ class JiumiSeeder extends BaseCommand
      */
     public function __construct(SeederCreator $creator)
     {
-        parent::__construct('Jiumi:seeder-gen');
+        parent::__construct('jiumi:seeder-gen');
         $this->setDescription('Generate a new JiumiAdmin module seeder class');
 
         $this->creator = $creator;

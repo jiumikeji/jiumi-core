@@ -37,7 +37,7 @@ abstract class JiumiGenerator
      */
     public function __construct(ContainerInterface $container)
     {
-        $this->setStubDir(BASE_PATH . '/Jiumi/Generator/Stubs/');
+        $this->setStubDir(BASE_PATH . '/jiumi/Generator/Stubs/');
         $this->container = $container;
     }
 

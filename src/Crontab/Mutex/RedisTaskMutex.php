@@ -6,7 +6,6 @@
  * @Copyright：Copyright (c) 2022 - 2035, 河北九米电子科技有限公司, Inc.
  */
 
-
 declare(strict_types=1);
 namespace Jiumi\Crontab\Mutex;
 
@@ -40,7 +39,7 @@ class RedisTaskMutex implements TaskMutex
     }
 
     /**
-     * DeterJiumi if a task mutex exists for the given crontab.
+     * Deterjiumi if a task mutex exists for the given crontab.
      * @param JiumiCrontab $crontab
      * @return bool
      */

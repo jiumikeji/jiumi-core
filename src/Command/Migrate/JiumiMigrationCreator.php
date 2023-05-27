@@ -16,6 +16,6 @@ class JiumiMigrationCreator extends MigrationCreator
 
     public function stubPath(): string
     {
-        return BASE_PATH . '/Jiumi/Command/Migrate/Stubs';
+        return BASE_PATH . '/jiumi/Command/Migrate/Stubs';
     }
 }

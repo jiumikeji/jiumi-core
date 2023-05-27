@@ -7,7 +7,6 @@ declare(strict_types=1);
  * @Link   http://www.hebei9.cn
  * @Copyright：Copyright (c) 2022 - 2035, 河北九米电子科技有限公司, Inc.
  */
-
 namespace Jiumi\Exception\Handler;
 
 use Hyperf\Contract\StdoutLoggerInterface;
@@ -31,7 +30,7 @@ class AppExceptionHandler extends ExceptionHandler
     public function __construct()
     {
         $this->console = console();
-        $this->logger = container()->get(LoggerFactory::class)->get('JiumiAdmin');
+        $this->logger = container()->get(LoggerFactory::class)->get('jiumiAdmin');
     }
 
     public function handle(Throwable $throwable, ResponseInterface $response): ResponseInterface

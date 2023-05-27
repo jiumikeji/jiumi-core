@@ -9,7 +9,6 @@ declare(strict_types=1);
  * @Copyright：Copyright (c) 2022 - 2035, 河北九米电子科技有限公司, Inc.
  */
 
-
 namespace Jiumi\Interfaces;
 
 /**

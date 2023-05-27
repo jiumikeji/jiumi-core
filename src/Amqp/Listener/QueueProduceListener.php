@@ -1,10 +1,10 @@
 <?php
 /**
  * Description:队列消费监听器
- * User: LBG
+ * Created by phpStorm.
+ * User: mike
  * Date: 2021/9/30
  * Time: 3:13 下午
- * @Copyright：Copyright (c) 2022 - 2035, 河北九米电子科技有限公司, Inc.
  */
 declare(strict_types=1);
 namespace Jiumi\Amqp\Listener;

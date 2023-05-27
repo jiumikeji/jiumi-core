@@ -20,7 +20,7 @@ class HttpGenCommand extends JiumiCommand
      * 安装命令
      * @var string|null
      */
-    protected ?string $name = 'Jiumi:http-gen';
+    protected ?string $name = 'jiumi:http-gen';
 
     /**
      * @var string

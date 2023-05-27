@@ -7,7 +7,6 @@
  * @Copyright：Copyright (c) 2022 - 2035, 河北九米电子科技有限公司, Inc.
  */
 
-
 declare(strict_types=1);
 
 namespace Jiumi\Crontab;
@@ -27,7 +26,7 @@ class JiumiCrontabProcess extends AbstractProcess
     /**
      * @var string
      */
-    public string $name = '九米定时服务';
+    public string $name = 'JiumiAdmin Crontab';
 
     /**
      * @var Server
@@ -53,7 +52,7 @@ class JiumiCrontabProcess extends AbstractProcess
      * @var JiumiCrontabManage
      */
     #[Inject]
-    protected JiumiCrontabManage $JiumiCrontabManage;
+    protected JiumiCrontabManage $jiumiCrontabManage;
 
     /**
      * @param ContainerInterface $container
@@ -112,7 +111,7 @@ class JiumiCrontabProcess extends AbstractProcess
     {
         $current = date('s', time());
         $sleep = 60 - $current;
-        $this->logger->debug('九米定时服务调度程序休眠 ' . $sleep . 's.');
+        $this->logger->debug('九米框架定时任务调用程序休眠 ' . $sleep . 's.');
         $sleep > 0 && \Swoole\Coroutine::sleep($sleep);
     }
 }

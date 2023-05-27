@@ -28,7 +28,7 @@ trait ModelMacroTrait
         $model = $this;
         Builder::macro('userDataScope', function(?int $userid = null) use($model)
         {
-            if (! config('Jiumiadmin.data_scope_enabled')) {
+            if (! config('jiumiadmin.data_scope_enabled')) {
                 return $this;
             }
 

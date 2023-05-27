@@ -1,10 +1,10 @@
 <?php
 /**
  * Description:消费切面
- * User: LBG
+ * Created by phpStorm.
+ * User: mike
  * Date: 2021/11/19
  * Time: 下午2:14
- * @Copyright：Copyright (c) 2022 - 2035, 河北九米电子科技有限公司, Inc.
  */
 declare(strict_types=1);
 namespace Jiumi\Aspect;

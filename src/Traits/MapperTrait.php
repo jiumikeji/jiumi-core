@@ -87,8 +87,8 @@ trait MapperTrait
         string $children='children'
     ): array
     {
-        $params['_Jiumiadmin_tree'] = true;
-        $params['_Jiumiadmin_tree_pid'] = $parentField;
+        $params['_jiumiadmin_tree'] = true;
+        $params['_jiumiadmin_tree_pid'] = $parentField;
         $data = $this->listQuerySetting($params, $isScope)->get();
         return $data->toTree([], $data[0]->{$parentField} ?? 0, $id, $parentField, $children);
     }
@@ -123,8 +123,8 @@ trait MapperTrait
     public function handleOrder(Builder $query, ?array &$params = null): Builder
     {
         // 对树型数据强行加个排序
-        if (isset($params['_Jiumiadmin_tree'])) {
-            $query->orderBy($params['_Jiumiadmin_tree_pid']);
+        if (isset($params['_jiumiadmin_tree'])) {
+            $query->orderBy($params['_jiumiadmin_tree_pid']);
         }
 
         if ($params['orderBy'] ?? false) {

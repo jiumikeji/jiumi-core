@@ -28,7 +28,7 @@ class UpdateProjectCommand extends JiumiCommand
      * 更新项目命令
      * @var string|null
      */
-    protected ?string $name = 'Jiumi:update';
+    protected ?string $name = 'jiumi:update';
 
     protected array $database = [];
 
@@ -51,8 +51,8 @@ class UpdateProjectCommand extends JiumiCommand
     public function configure()
     {
         parent::configure();
-        $this->setHelp('run "php bin/hyperf.php Jiumi:update" Update JiumiAdmin system');
-        $this->setDescription('JiumiAdmin系统更新命令');
+        $this->setHelp('run "php bin/hyperf.php jiumi:update" Update JiumiAdmin system');
+        $this->setDescription('JiumiAdmin system update command');
     }
 
     /**
@@ -79,6 +79,6 @@ class UpdateProjectCommand extends JiumiCommand
 
         redis()->flushDB();
 
-        $this->line($this->getGreenText('成功更新...'));
+        $this->line($this->getGreenText('updated successfully...'));
     }
 }

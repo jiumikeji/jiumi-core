@@ -78,7 +78,7 @@ class SqlGenerator extends JiumiGenerator implements CodeGenerator
         $this->filesystem->put($path, $this->placeholderReplace()->getCodeContent());
 
         if ($this->model->build_menu === self::YES) {
-            Db::connection()->getPdo()->exec(
+            Db::connection('default')->getPdo()->exec(
                 str_replace(["\r", "\n"], ['', ''], $this->replace()->getCodeContent())
             );
         }

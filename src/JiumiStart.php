@@ -23,22 +23,26 @@ class JiumiStart extends ServerStartCallback
         $service = container()->get(ModuleService::class);
         $service->setModuleCache();
         $console = console();
-        $console->info('JiumiAdmin start success...');
+        $console->info('九米服务启动成功...');
         $console->info($this->welcome());
-        $console->info('current booting the user: ' . shell_exec('whoami'));
+        $console->info('当前正在引导用户: ' . shell_exec('whoami'));
     }
 
     protected function welcome(): string
     {
         return sprintf('
-/---------------------- welcome to use -----------------------\
-|               _                ___       __          _      |
-|    ____ ___  (_)___  _____    /   | ____/ /___ ___  (_)___  |
-|   / __ `__ \/ / __ \/ ___/   / /| |/ __  / __ `__ \/ / __ \ |
-|  / / / / / / / / / / /__/   / ___ / /_/ / / / / / / / / / / |
-| /_/ /_/ /_/_/_/ /_/\___/   /_/  |_\__,_/_/ /_/ /_/_/_/ /_/  |
-|                                                             |
-\_____________  Copyright JiumiAdmin 2021 ~ %s  _____________|
+/---------------------------- 九米科技欢迎您 ------------------------------\
+|     _____        ______        __    __        __       __        ______  |
+|    /     |      /      |      /  |  /  |      /  \     /  |      /      | |
+|    $$$$$ |      $$$$$$/       $$ |  $$ |      $$  \   /$$ |      $$$$$$/  |
+|       $$ |        $$ |        $$ |  $$ |      $$$  \ /$$$ |        $$ |   |
+|  __   $$ |        $$ |        $$ |  $$ |      $$$$  /$$$$ |        $$ |   |
+| /  |  $$ |        $$ |        $$ |  $$ |      $$ $$ $$/$$ |        $$ |   |
+| $$ \__$$ |       _$$ |_       $$ \__$$ |      $$ |$$$/ $$ |       _$$ |_  |
+| $$    $$/       / $$   |      $$    $$/       $$ | $/  $$ |      / $$   | |
+|  $$$$$$/        $$$$$$/        $$$$$$/        $$/      $$/       $$$$$$/  |
+|                                                                           |
+\_______________________  Copyright 九米科技 2021 ~ %s   _________________|
 ', date('Y'));
     }
 }

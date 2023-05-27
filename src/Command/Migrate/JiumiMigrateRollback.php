@@ -25,7 +25,7 @@ class JiumiMigrateRollback extends BaseCommand
 {
     use ConfirmableTrait;
 
-    protected ?string $name = 'Jiumi:migrate-rollback';
+    protected ?string $name = 'jiumi:migrate-rollback';
 
     /**
      * The console command description.
@@ -53,7 +53,7 @@ class JiumiMigrateRollback extends BaseCommand
 
         $this->migrator = $migrator;
 
-        $this->setDescription('The run migrate rollback class of JiumiAdmin module');
+        $this->setDescription('九米框架模块的运行迁移回滚类');
     }
 
     /**
@@ -90,13 +90,13 @@ class JiumiMigrateRollback extends BaseCommand
     protected function getOptions(): array
     {
         return [
-            ['database', null, InputOption::VALUE_OPTIONAL, 'The database connection to use'],
-            ['force', null, InputOption::VALUE_NONE, 'Force the operation to run when in production'],
-            ['path', null, InputOption::VALUE_OPTIONAL, 'The path to the migrations files to be executed'],
-            ['realpath', null, InputOption::VALUE_NONE, 'Indicate any provided migration file paths are pre-resolved absolute paths'],
-            ['pretend', null, InputOption::VALUE_NONE, 'Dump the SQL queries that would be run'],
-            ['seed', null, InputOption::VALUE_NONE, 'Indicates if the seed task should be re-run'],
-            ['step', null, InputOption::VALUE_NONE, 'Force the migrations to be run so they can be rolled back individually'],
+            ['database', null, InputOption::VALUE_OPTIONAL, '要使用的数据库连接'],
+            ['force', null, InputOption::VALUE_NONE, '在生产环境中强制运行该操作'],
+            ['path', null, InputOption::VALUE_OPTIONAL, '要执行的迁移文件的路径'],
+            ['realpath', null, InputOption::VALUE_NONE, '指出任何提供的迁移文件路径都是预先解析的绝对路径'],
+            ['pretend', null, InputOption::VALUE_NONE, '转储将要运行的SQL查询'],
+            ['seed', null, InputOption::VALUE_NONE, '指示是否应该重新运行任务'],
+            ['step', null, InputOption::VALUE_NONE, '强制运行迁移，以便可以单独回滚迁移'],
         ];
     }
 
@@ -111,7 +111,7 @@ class JiumiMigrateRollback extends BaseCommand
     protected function getArguments(): array
     {
         return [
-            ['name', InputArgument::REQUIRED, 'Please enter the module to be run'],
+            ['name', InputArgument::REQUIRED, '请输入要运行的模块'],
         ];
     }
 
