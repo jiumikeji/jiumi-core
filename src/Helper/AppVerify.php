@@ -9,6 +9,7 @@
 declare(strict_types=1);
 namespace Jiumi\Helper;
 
+use Hyperf\HttpServer\Contract\RequestInterface;
 use Jiumikeji\JWTAuth\JWT;
 use Psr\SimpleCache\InvalidArgumentException;
 
@@ -19,6 +20,7 @@ class AppVerify
      */
     protected JWT $jwt;
 
+    public RequestInterface $request;
 
     /**
      * AppVerify constructor.
@@ -28,6 +30,7 @@ class AppVerify
     {
         /* @var JWT $this->jwt */
         $this->jwt = make(JWT::class)->setScene($scene);
+        $this->request = make(RequestInterface::class);
     }
 
     /**
@@ -60,21 +63,23 @@ class AppVerify
     }
 
     /**
-     * 获取当前API的信息
+     * 获取当前APP的信息
      * @return array
      */
-    public function getUserInfo(): array
+    public function getAppInfo(): array
     {
-        return $this->jwt->getParserData();
+        $params = $this->request->getQueryParams() ?? null;
+        return $this->jwt->getParserData($params['access_token']);
     }
 
     /**
-     * 获取当前ID
+     * 获取apiID
      * @return string
      */
-    public function getId(): string
+    public function getApiId(): string
     {
-        return (string) $this->jwt->getParserData()['id'];
+        $accessToken = $this->request->getQueryParams()['access_token'] ?? null;
+        return (string) $this->jwt->getParserData($accessToken)['id'];
     }
 
     /**
@@ -83,7 +88,8 @@ class AppVerify
      */
     public function getAppId(): string
     {
-        return (string) $this->jwt->getParserData()['app_id'];
+        $accessToken = $this->request->getQueryParams()['access_token'] ?? null;
+        return (string) $this->jwt->getParserData($accessToken)['app_id'];
     }
 
     /**
@@ -104,6 +110,7 @@ class AppVerify
      */
     public function refresh(): string
     {
-        return $this->jwt->refreshToken();
+        $accessToken = $this->request->getQueryParams()['access_token'] ?? null;
+        return $this->jwt->refreshToken($accessToken);
     }
 }

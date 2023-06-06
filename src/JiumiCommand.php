@@ -35,7 +35,7 @@ abstract class JiumiCommand extends HyperfCommand
 
     protected function getStub($filename): string
     {
-        return BASE_PATH . '/jiumi/Command/Creater/Stubs/' . $filename . '.stub';
+        return BASE_PATH . '/vendor/jiumikeji/jiumi-core/src/Command/Creater/Stubs/' . $filename . '.stub';
     }
 
     protected function getModulePath(): string

@@ -7,11 +7,11 @@ declare(strict_types=1);
  * @Link   http://www.hebei9.cn
  * @Copyright：Copyright (c) 2022 - 2035, 河北九米电子科技有限公司, Inc.
  */
-namespace Jiumi;
+namespace Api\Request;
 
 use Hyperf\Validation\Request\FormRequest;
 
-class JiumiFormRequest extends FormRequest
+class JiumiApiFormRequest extends FormRequest
 {
     /**
      * Deterjiumi if the user is authorized to make this request.
@@ -37,7 +37,8 @@ class JiumiFormRequest extends FormRequest
     public function rules(): array
     {
         $operation = $this->getOperation();
-        $method = $operation . 'Rules';
+        $operation = explode('.', $operation);
+        $method = end($operation) . 'Rules';
         $rules = ( $operation && method_exists($this, $method) ) ? $this->$method() : [];
         return array_merge($rules, $this->commonRules());
     }

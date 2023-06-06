@@ -108,8 +108,8 @@ class InstallProjectCommand extends JiumiCommand
     protected function welcome()
     {
         $this->line('-----------------------------------------------------------', 'comment');
-        $this->line('您好，欢迎您使用九米管理系统.', 'comment');
-        $this->line('安装就要开始了，只需要几个步骤', 'comment');
+        $this->line('Hello, welcome use JiumiAdmin system.', 'comment');
+        $this->line('The installation is about to start, just a few steps', 'comment');
         $this->line('-----------------------------------------------------------', 'comment');
     }
 
@@ -147,7 +147,7 @@ class InstallProjectCommand extends JiumiCommand
             $dbname = $this->ask('please input database name, default:', 'jiumiadmin');
             $dbhost = $this->ask('please input database host, default:', '127.0.0.1');
             $dbport = $this->ask('please input database host port, default:', '3306');
-            $prefix = $this->ask('please input table prefix, default:', 'jiumi_');
+            $prefix = $this->ask('please input table prefix, default:', 'Null');
             $dbuser = $this->ask('please input database username, default:', 'root');
             $dbpass = '';
 
@@ -299,18 +299,17 @@ class InstallProjectCommand extends JiumiCommand
             $this->call('vendor:publish', [ 'package' => 'jiumikeji/jiumi' ]);
         }
 
-        //$downloadFrontCode = $this->confirm('Do you downloading the front-end code to "./web" directory?', true);
+        $downloadFrontCode = $this->confirm('Do you downloading the front-end code to "./web" directory?', true);
 
         // 下载前端代码
-		/*
         if ($downloadFrontCode) {
             $this->line(PHP_EOL . ' Now about to start downloading the front-end code' . PHP_EOL, 'comment');
             if (\shell_exec('which git')) {
                 \system('git clone https://gitee.com/jiumiadmin/jiumiadmin-vue.git ./web/');
             } else {
-                $this->warn('您的服务器没有安装“git”命令，将跳过下载前端项目');
+                $this->warn('Your server does not have the `git` command installed and will skip downloading the front-end project');
             }
-        }*/
+        }
     }
 
     protected function initUserData()
@@ -326,13 +325,13 @@ class InstallProjectCommand extends JiumiCommand
         // 创建超级管理员
         Db::table("system_user")->insert([
             'id' => env('SUPER_ADMIN', 1),
-            'username' => 'jiumiAdmin',
+            'username' => 'superAdmin',
             'password' => password_hash('admin123', PASSWORD_DEFAULT),
             'user_type' => '100',
-            'nickname' => '河北九米电子科技有限公司',
-            'email' => '10056446@qq.com',
-            'phone' => '13785208521',
-            'signed' => '成立于2013年，是致力于应用软件、平台系统类软件的定制开发及互联网趋势研究的技术服务型企业',
+            'nickname' => '创始人',
+            'email' => 'admin@adminjiumi.com',
+            'phone' => '16858888988',
+            'signed' => '广阔天地，大有所为',
             'dashboard' => 'statistics',
             'created_by' => 0,
             'updated_by' => 0,
@@ -344,7 +343,7 @@ class InstallProjectCommand extends JiumiCommand
         Db::table('system_role')->insert([
             'id' => env('ADMIN_ROLE', 1),
             'name' => '超级管理员（创始人）',
-            'code' => 'jiumiAdmin',
+            'code' => 'superAdmin',
             'data_scope' => 0,
             'sort' => 0,
             'created_by' => env('SUPER_ADMIN', 0),
@@ -371,7 +370,7 @@ class InstallProjectCommand extends JiumiCommand
         }
         $this->line(PHP_EOL . sprintf('%s
 JiumiAdmin Version: %s
-default username: jiumiAdmin
+default username: superAdmin
 default password: admin123', $this->getInfo(), Jiumi::getVersion()), 'comment');
     }
 
