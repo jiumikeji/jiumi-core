@@ -47,7 +47,7 @@ class JiumiFormRequest extends FormRequest
      */
     protected function getOperation(): ?string
     {
-        $path = explode('/', $this->path());
+        $path = explode('/', $this->getFixPath());
         do {
             $operation = array_pop($path);
         } while (is_numeric($operation));
@@ -55,5 +55,14 @@ class JiumiFormRequest extends FormRequest
         return $operation;
     }
 
+    /**
+     * request->path在单元测试中拿不到，导致JiumiFormRequest验证失败
+     * 取uri中的path, fix
+     * @return string|null
+     */
+    protected function getFixPath(): string
+    {
+        return ltrim($this->getUri()->getPath(), '/');
+    }
 
 }

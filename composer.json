@@ -6,7 +6,7 @@
         "php",
         "jiumiadmin core"
     ],
-    "description": "九米框架包",
+    "description": "九米科技框架包",
     "autoload": {
         "psr-4": {
             "Jiumi\\": "src/"

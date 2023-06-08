@@ -30,7 +30,7 @@ class JiumiStart extends ServerStartCallback
 
     protected function welcome(): string
     {
-       return sprintf('
+        return sprintf('
 /---------------------------- 九米科技欢迎您 ------------------------------\
 |     _____        ______        __    __        __       __        ______  |
 |    /     |      /      |      /  |  /  |      /  \     /  |      /      | |

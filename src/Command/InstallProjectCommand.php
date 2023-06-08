@@ -305,7 +305,7 @@ class InstallProjectCommand extends JiumiCommand
         if ($downloadFrontCode) {
             $this->line(PHP_EOL . ' Now about to start downloading the front-end code' . PHP_EOL, 'comment');
             if (\shell_exec('which git')) {
-                \system('git clone https://gitee.com/jiumiadmin/jiumiadmin-vue.git ./web/');
+                \system('git clone https://gitee.com/jiumikeji/jiumiadmin-vue.git ./web/');
             } else {
                 $this->warn('Your server does not have the `git` command installed and will skip downloading the front-end project');
             }
@@ -325,13 +325,13 @@ class InstallProjectCommand extends JiumiCommand
         // 创建超级管理员
         Db::table("system_user")->insert([
             'id' => env('SUPER_ADMIN', 1),
-            'username' => 'superAdmin',
+            'username' => 'jiumiAdmin',
             'password' => password_hash('admin123', PASSWORD_DEFAULT),
             'user_type' => '100',
-            'nickname' => '创始人',
-            'email' => 'admin@adminjiumi.com',
-            'phone' => '16858888988',
-            'signed' => '广阔天地，大有所为',
+            'nickname' => '九米科技有限公司',
+            'email' => '10056446@qq.com',
+            'phone' => '13785208521',
+            'signed' => '成立于2013年，是致力于应用软件、平台系统类软件的定制开发及互联网趋势研究的技术服务型企业',
             'dashboard' => 'statistics',
             'created_by' => 0,
             'updated_by' => 0,
@@ -343,7 +343,7 @@ class InstallProjectCommand extends JiumiCommand
         Db::table('system_role')->insert([
             'id' => env('ADMIN_ROLE', 1),
             'name' => '超级管理员（创始人）',
-            'code' => 'superAdmin',
+            'code' => 'jiumiAdmin',
             'data_scope' => 0,
             'sort' => 0,
             'created_by' => env('SUPER_ADMIN', 0),
@@ -369,8 +369,8 @@ class InstallProjectCommand extends JiumiCommand
             sleep(1);
         }
         $this->line(PHP_EOL . sprintf('%s
-JiumiAdmin Version: %s
-default username: superAdmin
+九米框架 Version: %s
+default username: jiumiAdmin
 default password: admin123', $this->getInfo(), Jiumi::getVersion()), 'comment');
     }
 
