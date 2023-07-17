@@ -3,7 +3,7 @@
    * 读取{BUSINESS_NAME}
    * @returns
    */
-  read (id) {
+  read (id, data = {}) {
     return request({
       url: '{REQUEST_ROUTE}/read/' + id,
       method: 'get',
