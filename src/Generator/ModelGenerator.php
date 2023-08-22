@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Jiumi\Generator;
 
 use App\Setting\Model\SettingGenerateTables;
-use App\Setting\Service\SettingGenerateColumnsService;
+use Jiumi\Interfaces\ServiceInterface\GenerateColumnServiceInterface;
 use Hyperf\Utils\Filesystem\Filesystem;
 use Jiumi\Exception\NormalStatusException;
 use Jiumi\Helper\Str;
@@ -77,7 +77,7 @@ class ModelGenerator extends JiumiGenerator implements CodeGenerator
         $command = [
             'command'  => 'jiumi:model-gen',
             '--module' => $this->model->module_name,
-            '--table'  => $this->model->table_name
+            '--table'  => str_replace(env('DB_PREFIX'), '', $this->model->table_name)
         ];
 
         if (! Str::contains($this->model->table_name, Str::lower($this->model->module_name))) {
@@ -237,7 +237,7 @@ class ModelGenerator extends JiumiGenerator implements CodeGenerator
      */
     protected function getFillAble(): string
     {
-        $data = make(SettingGenerateColumnsService::class)->getList(
+        $data = make(GenerateColumnServiceInterface::class)->getList(
             ['select' => 'column_name', 'table_id' => $this->model->id]
         );
         $columns = [];

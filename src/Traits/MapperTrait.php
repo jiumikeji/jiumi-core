@@ -273,11 +273,12 @@ trait MapperTrait
     /**
      * 读取一条数据
      * @param int $id
+     * @param array $column
      * @return JiumiModel|null
      */
-    public function read(int $id): ?JiumiModel
+    public function read(int $id, array $column = ['*']): ?JiumiModel
     {
-        return ($model = $this->model::find($id)) ? $model : null;
+        return ($model = $this->model::find($id, $column)) ? $model : null;
     }
 
     /**
@@ -306,11 +307,12 @@ trait MapperTrait
      * 获取单列值
      * @param array $condition
      * @param string $columns
+     * @param string|null $key
      * @return array
      */
-    public function pluck(array $condition, string $columns = 'id'): array
+    public function pluck(array $condition, string $columns = 'id', ?string $key = null): array
     {
-        return $this->model::where($condition)->pluck($columns)->toArray();
+        return $this->model::where($condition)->pluck($columns, $key)->toArray();
     }
 
     /**
@@ -656,7 +658,13 @@ trait MapperTrait
         return $object->getQuery();
     }
 
-    public function dynamicRelations(\Jiumi\JiumiModel &$model, &$config)
+    /**
+     * 动态关联模型
+     * @param JiumiModel $model
+     * @param $config ['name', 'model', 'type', 'localKey', 'foreignKey', 'middleTable', 'as', 'where', 'whereIn' ]
+     * @return void
+     */
+    public function dynamicRelations(\Jiumi\JiumiModel &$model, &$config): void
     {
         $model->resolveRelationUsing($config['name'], function($primaryModel) use($config) {
             $namespace = str_replace('.', "\\", $config['model']);
@@ -676,13 +684,13 @@ trait MapperTrait
                     $config['foreignKey'],
                     $config['localKey']
                 );
-                if ($config['as']) {
+                if (!empty($config['as'])) {
                     $primaryModel->as($config['as']);
                 }
-                if ($config['where'] && is_array($config['where'])) foreach ($config['where'] as $field => $value) {
+                if (!empty($config['where']) && is_array($config['where'])) foreach ($config['where'] as $field => $value) {
                     $primaryModel->wherePivot($field, $value);
                 }
-                if ($config['whereIn'] && is_array($config['whereIn'])) foreach ($config['whereIn'] as $field => $value) {
+                if (!empty($config['whereIn']) && is_array($config['whereIn'])) foreach ($config['whereIn'] as $field => $value) {
                     $primaryModel->wherePivotIn($field, $value);
                 }
             }

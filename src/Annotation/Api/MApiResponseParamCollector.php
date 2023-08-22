@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jiumi\Annotation\Api;
 
-use App\System\Service\SystemDictDataService;
+use Jiumi\Interfaces\ServiceInterface\DictDataServiceInterface;
 use Hyperf\Di\MetadataCollector;
 
 class MApiResponseParamCollector extends MetadataCollector
@@ -29,7 +29,7 @@ class MApiResponseParamCollector extends MetadataCollector
 
     public static function parseParams()
     {
-        $service = container()->get(SystemDictDataService::class);
+        $service = container()->get(DictDataServiceInterface::class);
         $dataType = $service->getList([
             'code' => 'api_data_type'
         ]);

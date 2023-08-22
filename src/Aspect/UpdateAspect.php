@@ -9,6 +9,7 @@
 declare(strict_types=1);
 namespace Jiumi\Aspect;
 
+use Hyperf\Context\Context;
 use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -17,6 +18,7 @@ use Jiumi\JiumiModel;
 use Jiumi\JiumiRequest;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class UpdateAspect
@@ -43,6 +45,7 @@ class UpdateAspect extends AbstractAspect
         if ($instance instanceof JiumiModel &&
             in_array('updated_by', $instance->getFillable()) &&
             config('jiumiadmin.data_scope_enabled') &&
+            Context::has(ServerRequestInterface::class) &&
             container()->get(JiumiRequest::class)->getHeaderLine('authorization')
         ) {
             try {

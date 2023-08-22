@@ -9,14 +9,16 @@
 declare(strict_types=1);
 namespace Jiumi;
 
-use Hyperf\Database\Commands\Ast\ModelUpdateVisitor as Visitor;
+use Hyperf\Database\Commands\Ast\ModelUpdateVisitor;
 use Hyperf\Utils\Str;
+use Jiumi\Annotation\DependProxy;
 
 /**
  * Class JiumiModelVisitor
  * @package System
  */
-class JiumiModelVisitor extends  Visitor
+#[DependProxy(values: [ ModelUpdateVisitor::class ])]
+class JiumiModelVisitor extends ModelUpdateVisitor
 {
     /**
      * @param string $type

@@ -9,7 +9,7 @@
 declare(strict_types=1);
 namespace Jiumi\Crontab;
 
-use App\Setting\Service\SettingCrontabLogService;
+use Jiumi\Interfaces\ServiceInterface\CrontabLogServiceInterface;
 use Carbon\Carbon;
 use Closure;
 use Hyperf\Contract\ApplicationInterface;
@@ -27,12 +27,19 @@ use Psr\Container\ContainerInterface;
 use Swoole\Timer;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
-use App\Setting\Model\SettingCrontab;
 
 use function Hyperf\Support\make;
 
 class JiumiExecutor
 {
+    public const COMMAND_CRONTAB = 1;
+    // 类任务
+    public const CLASS_CRONTAB = 2;
+    // URL任务
+    public const URL_CRONTAB = 3;
+    // EVAL 任务
+    public const EVAL_CRONTAB = 4;
+
     /**
      * @var ContainerInterface
      */
@@ -85,7 +92,7 @@ class JiumiExecutor
         !$run && $diff = $crontab->getExecuteTime()->diffInRealSeconds(new Carbon());
         $callback = null;
         switch ($crontab->getType()) {
-            case SettingCrontab::CLASS_CRONTAB:
+            case self::CLASS_CRONTAB:
                 $class = $crontab->getCallback();
                 $method = 'execute';
                 $parameters = $crontab->getParameter() ?: null;
@@ -112,22 +119,22 @@ class JiumiExecutor
                     };
                 }
                 break;
-            case SettingCrontab::COMMAND_CRONTAB:
+            case self::COMMAND_CRONTAB:
                 $command = ['command' => $crontab->getCallback()];
-                $parameter = $crontab->getParameter() ?: '{}';
-                $input = make(ArrayInput::class, ['parameters' => array_merge($command, json_decode($parameter, true))]);
+                $parametersInfo = ['parameters' => json_decode($crontab->getParameter() ?: '[]', true)];
+                $input = make(ArrayInput::class, array_merge($command, $parametersInfo));
                 $output = make(NullOutput::class);
                 $application = $this->container->get(ApplicationInterface::class);
                 $application->setAutoExit(false);
-                $callback = function () use ($application, $input, $output, $crontab) {
-                    $runnable = function () use ($application, $input, $output, $crontab) {
-                        $result = $application->run($input, $output);
+                $callback = function () use ($application, $input, $output, $crontab, $command) {
+                    $runnable = function () use ($application, $input, $output, $crontab, $command) {
+                        $result = $application->find($command['command'])->run($input, $output);
                         $this->logResult($crontab, $result === 0, $result);
                     };
                     $this->decorateRunnable($crontab, $runnable)();
                 };
                 break;
-            case SettingCrontab::URL_CRONTAB:
+            case self::URL_CRONTAB:
                 $clientFactory = $this->container->get(ClientFactory::class);
                 $client = $clientFactory->create();
                 $callback = function () use ($client, $crontab) {
@@ -147,7 +154,7 @@ class JiumiExecutor
                     $this->decorateRunnable($crontab, $runnable)();
                 };
                 break;
-            case SettingCrontab::EVAL_CRONTAB:
+            case self::EVAL_CRONTAB:
                 $callback = function () use ($crontab) {
                     $runnable = function () use ($crontab) {
                         $result = true;
@@ -246,7 +253,7 @@ class JiumiExecutor
                 $this->logger->error(sprintf('Crontab task [%s] failed execution at %s.', $crontab->getName(), date('Y-m-d H:i:s')));
             }
         }
-        $logService = $this->container->get(SettingCrontabLogService::class);
+        $logService = $this->container->get(CrontabLogServiceInterface::class);
         $data = [
             'crontab_id' => $crontab->getCrontabId(),
             'name' => $crontab->getName(),

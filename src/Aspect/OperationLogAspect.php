@@ -9,7 +9,7 @@
 declare(strict_types=1);
 namespace Jiumi\Aspect;
 
-use App\System\Service\SystemMenuService;
+use Jiumi\Interfaces\ServiceInterface\MenuServiceInterface;
 use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -18,7 +18,6 @@ use Jiumi\Annotation\Permission;
 use Jiumi\Event\Operation;
 use Jiumi\Helper\Ip2region;
 use Jiumi\Helper\LoginUser;
-use Jiumi\Helper\Str;
 use Jiumi\JiumiRequest;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -117,6 +116,6 @@ class OperationLogAspect extends AbstractAspect
      */
     protected function getOperationMenuName(string $code): string
     {
-        return $this->container->get(SystemMenuService::class)->findNameByCode($code);
+        return $this->container->get(MenuServiceInterface::class)->findNameByCode($code);
     }
 }

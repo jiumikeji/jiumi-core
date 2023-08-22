@@ -13,7 +13,7 @@ namespace Jiumi\Generator;
 
 use App\Setting\Model\SettingGenerateColumns;
 use App\Setting\Model\SettingGenerateTables;
-use App\Setting\Service\SettingGenerateColumnsService;
+use Jiumi\Interfaces\ServiceInterface\GenerateColumnServiceInterface;
 use Hyperf\Utils\Filesystem\Filesystem;
 use Jiumi\Exception\NormalStatusException;
 use Jiumi\Generator\Traits\MapperGeneratorTraits;
@@ -263,7 +263,7 @@ UseNamespace;
     protected function getSearch(): string
     {
         /* @var SettingGenerateColumns $model */
-        $model = make(SettingGenerateColumnsService::class)->mapper->getModel();
+        $model = make(GenerateColumnServiceInterface::class)->mapper->getModel();
         $columns = $model->newQuery()
             ->where('table_id', $this->model->id)
             ->where('is_query', self::YES)

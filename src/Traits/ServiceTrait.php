@@ -139,11 +139,12 @@ trait ServiceTrait
     /**
      * 读取一条数据
      * @param int $id
+     * @param array $column
      * @return JiumiModel|null
      */
-    public function read(int $id): ?JiumiModel
+    public function read(int $id, array $column = ['*']): ?JiumiModel
     {
-        return $this->mapper->read($id);
+        return $this->mapper->read($id, $column);
     }
 
     /**

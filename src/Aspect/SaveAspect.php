@@ -37,6 +37,7 @@ class SaveAspect extends AbstractAspect
      */
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
+        /** @var JiumiModel $instance */
         $instance = $proceedingJoinPoint->getInstance();
 
         if (config('jiumiadmin.data_scope_enabled')) {
@@ -44,11 +45,11 @@ class SaveAspect extends AbstractAspect
                 $user = user();
                 // 设置创建人
                 if ($instance instanceof JiumiModel &&
-                    in_array('created_by', $instance->getFillable()) &&
-                    is_null($instance->created_by)
+                    in_array($instance->getDataScopeField(), $instance->getFillable()) &&
+                    is_null($instance[$instance->getDataScopeField()])
                 ) {
                     $user->check();
-                    $instance->created_by = $user->getId();
+                    $instance[$instance->getDataScopeField()] = $user->getId();
                 }
 
                 // 设置更新人

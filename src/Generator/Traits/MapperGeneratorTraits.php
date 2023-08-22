@@ -45,7 +45,7 @@ trait MapperGeneratorTraits
             return <<<php
 
         // {$comment}
-        if (isset(\$params['{$name}']) && \$params['{$name}'] !== '') {
+        if (!empty(\$params['{$name}'])) {
             \$query->where('{$name}', 'like', '%'.\$params['{$name}'].'%');
         }
 
@@ -57,7 +57,7 @@ php;
             return <<<php
 
         // {$comment}
-        if (isset(\$params['{$name}']) && is_array(\$params['{$name}']) && count(\$params['{$name}']) == 2) {
+        if (!empty(\$params['{$name}']) && is_array(\$params['{$name}']) && count(\$params['{$name}']) == 2) {
             \$query->whereBetween(
                 '{$name}',
                 [ \$params['{$name}'][0], \$params['{$name}'][1] ]
@@ -71,7 +71,7 @@ php;
             return <<<php
 
         // {$comment}
-        if (isset(\$params['{$name}']) && \$params['{$name}'] !== '') {
+        if (!empty(\$params['{$name}'])) {
             \$query->whereIn('{$name}', \$params['{$name}']);
         }
 
@@ -83,7 +83,7 @@ php;
             return <<<php
 
         // {$comment}
-        if (isset(\$params['{$name}']) && \$params['{$name}'] !== '') {
+        if (!empty(\$params['{$name}'])) {
             \$query->whereNotIn('{$name}', \$params['{$name}']);
         }
 
@@ -94,7 +94,7 @@ php;
         return <<<php
 
         // {$comment}
-        if (isset(\$params['{$name}']) && \$params['{$name}'] !== '') {
+        if (!empty(\$params['{$name}'])) {
             \$query->where('{$name}', '{$mark}', \$params['{$name}']);
         }
 

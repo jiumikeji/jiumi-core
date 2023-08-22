@@ -9,7 +9,7 @@
 declare(strict_types=1);
 namespace Jiumi\Aspect;
 
-use App\System\Service\SystemUserService;
+use Jiumi\Interfaces\ServiceInterface\UserServiceInterface;
 use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -31,9 +31,9 @@ class PermissionAspect extends AbstractAspect
     ];
 
     /**
-     * SystemUserService
+     * UserServiceInterface
      */
-    protected SystemUserService $service;
+    protected UserServiceInterface $service;
 
     /**
      * JiumiRequest
@@ -47,12 +47,12 @@ class PermissionAspect extends AbstractAspect
 
     /**
      * PermissionAspect constructor.
-     * @param SystemUserService $service
+     * @param UserServiceInterface $service
      * @param JiumiRequest $request
      * @param LoginUser $loginUser
      */
     public function __construct(
-        SystemUserService $service,
+        UserServiceInterface $service,
         JiumiRequest $request,
         LoginUser $loginUser
     )
@@ -117,7 +117,7 @@ class PermissionAspect extends AbstractAspect
             foreach (explode(',', $codeString) as $code) {
                 $code = trim($code);
                 if (! in_array($code, $codes)) {
-                    $service = container()->get(\App\System\Service\SystemMenuService::class);
+                    $service = container()->get(\Jiumi\Interfaces\ServiceInterface\MenuServiceInterface::class);
                     throw new NoPermissionException(
                         t('system.no_permission') . ' -> [ ' . $service->findNameByCode($code) . ' ]'
                     );

@@ -9,8 +9,8 @@
 declare(strict_types=1);
 namespace Jiumi;
 
-use App\Setting\Service\ModuleService;
 use Hyperf\Framework\Bootstrap\ServerStartCallback;
+use Jiumi\Interfaces\ServiceInterface\ModuleServiceInterface;
 
 class JiumiStart extends ServerStartCallback
 {
@@ -20,12 +20,12 @@ class JiumiStart extends ServerStartCallback
      */
     public function beforeStart()
     {
-        $service = container()->get(ModuleService::class);
+        $service = container()->get(ModuleServiceInterface::class);
         $service->setModuleCache();
         $console = console();
         $console->info('JiumiAdmin start success...');
         $console->info($this->welcome());
-        $console->info('current booting the user: ' . shell_exec('whoami'));
+        str_contains(PHP_OS, 'CYGWIN') && $console->info('current booting the user: ' . shell_exec('whoami'));
     }
 
     protected function welcome(): string

@@ -18,7 +18,7 @@ class Jiumi
     /**
      * @var string
      */
-    private static string $version = '1.3.4';
+    private static string $version = '1.4.5';
 
     /**
      * @var string

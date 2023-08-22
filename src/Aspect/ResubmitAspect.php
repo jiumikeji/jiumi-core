@@ -14,6 +14,7 @@ use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Di\Exception\Exception;
 use Jiumi\Annotation\Resubmit;
+use Jiumi\Exception\JiumiException;
 use Jiumi\Exception\NormalStatusException;
 use Jiumi\JiumiRequest;
 use Jiumi\Redis\JiumiLockRedis;
@@ -38,26 +39,32 @@ class ResubmitAspect extends AbstractAspect
      */
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        /** @var $resubmit Resubmit*/
-        if (isset($proceedingJoinPoint->getAnnotationMetadata()->method[Resubmit::class])) {
-            $resubmit = $proceedingJoinPoint->getAnnotationMetadata()->method[Resubmit::class];
-        }
+        try {
+            $result = $proceedingJoinPoint->process();
 
-        $request = container()->get(JiumiRequest::class);
+            /** @var $resubmit Resubmit */
+            if (isset($proceedingJoinPoint->getAnnotationMetadata()->method[Resubmit::class])) {
+                $resubmit = $proceedingJoinPoint->getAnnotationMetadata()->method[Resubmit::class];
+            }
 
-        $key = md5(sprintf('%s-%s-%s', $request->ip(), $request->getPathInfo(), $request->getMethod()));
+            $request = container()->get(JiumiRequest::class);
 
-        $lockRedis = new JiumiLockRedis();
-        $lockRedis->setTypeName('resubmit');
+            $key = md5(sprintf('%s-%s-%s', $request->ip(), $request->getPathInfo(), $request->getMethod()));
 
-        if ($lockRedis->check($key)) {
+            $lockRedis = new JiumiLockRedis();
+            $lockRedis->setTypeName('resubmit');
+
+            if ($lockRedis->check($key)) {
+                $lockRedis = null;
+                throw new NormalStatusException($resubmit->message ?: t('jiumiadmin.resubmit'), 500);
+            }
+
+            $lockRedis->lock($key, $resubmit->second);
             $lockRedis = null;
-            throw new NormalStatusException($resubmit->message ?: t('jiumiadmin.resubmit'), 500);
+
+            return $result;
+        } catch (\Throwable $e) {
+            throw new JiumiException($e->getMessage(), $e->getCode());
         }
-
-        $lockRedis->lock($key, $resubmit->second);
-        $lockRedis = null;
-
-        return $proceedingJoinPoint->process();
     }
 }

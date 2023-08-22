@@ -28,6 +28,11 @@ class JiumiModel extends Model
     protected array $hidden = ['deleted_at'];
 
     /**
+     * 数据权限字段，表中需要有此字段
+     */
+    protected string $dataScopeField = 'created_by';
+
+    /**
      * 状态
      */
     public const ENABLE = 1;
@@ -95,5 +100,23 @@ class JiumiModel extends Model
     public function newCollection(array $models = []): JiumiCollection
     {
         return new JiumiCollection($models);
+    }
+
+    /**
+     * @return string
+     */
+    public function getDataScopeField(): string
+    {
+        return $this->dataScopeField;
+    }
+
+    /**
+     * @param string $name
+     * @return JiumiModel
+     */
+    public function setDataScopeField(string $name): self
+    {
+        $this->dataScopeField = $name;
+        return $this;
     }
 }

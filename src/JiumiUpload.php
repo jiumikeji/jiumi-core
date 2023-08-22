@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Jiumi;
 
-use App\Setting\Service\SettingConfigService;
+use Jiumi\Interfaces\ServiceInterface\ConfigServiceInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Filesystem\FilesystemFactory;
 use League\Flysystem\Filesystem;
@@ -130,7 +130,7 @@ class JiumiUpload
         /* @var UploadedFile $uploadFile */
         $path = BASE_PATH . '/runtime/chunk/';
         $chunkName = "{$path}{$data['hash']}_{$data['total']}_{$data['index']}.chunk";
-        $fs = container()->get(\Hyperf\Utils\Filesystem\Filesystem::class);
+        $fs = container()->get(\Hyperf\Support\Filesystem\Filesystem::class);
         $fs->isDirectory($path) || $fs->makeDirectory($path);
         $uploadFile->moveTo($chunkName);
         if ($data['index'] === $data['total']) {
@@ -202,7 +202,7 @@ class JiumiUpload
             }
 
             $realPath = BASE_PATH . '/runtime/' . $filename;
-            $fs = container()->get(\Hyperf\Utils\Filesystem\Filesystem::class);
+            $fs = container()->get(\Hyperf\Support\Filesystem\Filesystem::class);
             $fs->put($realPath, $content);
 
             $hash = md5_file($realPath);
@@ -312,7 +312,7 @@ class JiumiUpload
      */
     public function getStorageMode(): int|string
     {
-        return $this->container->get(SettingConfigService::class)->getConfigByKey('upload_mode')['value'] ?? 1;
+        return $this->container->get(ConfigServiceInterface::class)->getConfigByKey('upload_mode')['value'] ?? 1;
     }
 
     /**

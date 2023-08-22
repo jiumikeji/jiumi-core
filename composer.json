@@ -1,12 +1,12 @@
 {
-    "name": "jiumikeji/jiumi-core",
+    "name": "jiuimikeji/jiumi-core",
     "type": "library",
     "license": "Apache-2.0",
     "keywords": [
-        "php",
-        "jiumiadmin core"
+        "九米",
+        "九米科技"
     ],
-    "description": "九米科技框架包",
+    "description": "河北九米电子科技有限公司",
     "autoload": {
         "psr-4": {
             "Jiumi\\": "src/"

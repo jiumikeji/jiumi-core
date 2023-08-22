@@ -9,7 +9,7 @@
 declare(strict_types=1);
 namespace Jiumi\Middlewares;
 
-use App\Setting\Service\ModuleService;
+use Jiumi\Interfaces\ServiceInterface\ModuleServiceInterface;
 use Hyperf\Di\Annotation\AnnotationCollector;
 use Hyperf\Di\Annotation\Inject;
 use Jiumi\Helper\Str;
@@ -26,10 +26,10 @@ class CheckModuleMiddleware implements MiddlewareInterface
 {
     /**
      * 模块服务
-     * @var ModuleService
+     * @var ModuleServiceInterface
      */
     #[Inject]
-    protected ModuleService $service;
+    protected ModuleServiceInterface $service;
 
     /**
      * @param ServerRequestInterface $request

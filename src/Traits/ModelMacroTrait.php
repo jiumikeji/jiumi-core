@@ -43,11 +43,11 @@ trait ModelMacroTrait
                 return $this;
             }
 
-            if (!in_array('created_by', $model->getFillable())) {
+            if (!in_array($model->getDataScopeField(), $model->getFillable())) {
                 return $this;
             }
 
-            $dataScope = new class($userid, $this)
+            $dataScope = new class($userid, $this, $model)
             {
                 // 用户ID
                 protected int $userid;
@@ -58,10 +58,14 @@ trait ModelMacroTrait
                 // 数据范围用户ID列表
                 protected array $userIds = [];
 
-                public function __construct(int $userid, Builder $builder)
+                // 外部模型
+                protected mixed $model;
+
+                public function __construct(int $userid, Builder $builder, mixed $model)
                 {
                     $this->userid  = $userid;
                     $this->builder = $builder;
+                    $this->model = $model;
                 }
 
                 /**
@@ -72,7 +76,7 @@ trait ModelMacroTrait
                     $this->getUserDataScope();
                     return empty($this->userIds)
                         ? $this->builder
-                        : $this->builder->whereIn('created_by', array_unique($this->userIds));
+                        : $this->builder->whereIn($this->model->getDataScopeField(), array_unique($this->userIds));
                 }
 
                 protected function getUserDataScope(): void

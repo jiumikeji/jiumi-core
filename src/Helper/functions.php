@@ -13,6 +13,7 @@ use Hyperf\Utils\ApplicationContext;
 use Jiumi\Helper\LoginUser;
 use Jiumi\Helper\AppVerify;
 use Jiumi\Helper\Id;
+use Jiumi\Interfaces\ServiceInterface\QueueLogServiceInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 
@@ -105,6 +106,22 @@ if (! function_exists('format_size')) {
     }
 }
 
+if (! function_exists('lang')) {
+    /**
+     * 获取当前语言
+     * @param string $key
+     * @param array $replace
+     * @return string
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    function lang(): string
+    {
+        $acceptLanguage = container()->get(\Jiumi\JiumiRequest::class)->getHeaderLine('accept-language');
+        return str_replace('-', '_', !empty($acceptLanguage) ? explode(',',$acceptLanguage)[0] : 'zh_CN');
+    }
+}
+
 if (! function_exists('t')) {
     /**
      * 多语言函数
@@ -116,9 +133,7 @@ if (! function_exists('t')) {
      */
     function t(string $key, array $replace = []): string
     {
-        $acceptLanguage = container()->get(\Jiumi\JiumiRequest::class)->getHeaderLine('accept-language');
-        $language = !empty($acceptLanguage) ? explode(',',$acceptLanguage)[0] : 'zh_CN';
-        return __($key, $replace, $language);
+        return __($key, $replace, lang());
     }
 }
 
@@ -212,7 +227,7 @@ if (! function_exists('push_queue_message')) {
     function push_queue_message(QueueMessageVo $message, array $receiveUsers = []): bool
     {
         return container()
-            ->get(\App\System\Service\SystemQueueLogService::class)
+            ->get(QueueLogServiceInterface::class)
             ->pushMessage($message, $receiveUsers);
     }
 }
@@ -229,7 +244,7 @@ if (! function_exists('add_queue')) {
     function add_queue(\App\System\Vo\AmqpQueueVo $amqpQueueVo): bool
     {
         return container()
-            ->get(\App\System\Service\SystemQueueLogService::class)
+            ->get(QueueLogServiceInterface::class)
             ->addQueue($amqpQueueVo);
     }
 }

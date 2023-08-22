@@ -9,7 +9,7 @@
 declare(strict_types = 1);
 namespace Jiumi\Command;
 
-use App\Setting\Service\ModuleService;
+use Jiumi\Interfaces\ServiceInterface\ModuleServiceInterface;
 use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\ConfirmableTrait;
 use Hyperf\Database\Migrations\Migrator;
@@ -86,7 +86,7 @@ class ModuleCommand extends JiumiCommand
             exit;
         }
 
-        $service = make(ModuleService::class);
+        $service = make(ModuleServiceInterface::class);
         $name = ucfirst($name);
 
         // other module
