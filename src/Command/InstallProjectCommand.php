@@ -325,13 +325,13 @@ class InstallProjectCommand extends JiumiCommand
         // 创建超级管理员
         Db::table("system_user")->insert([
             'id' => env('SUPER_ADMIN', 1),
-            'username' => 'superAdmin',
+            'username' => 'jiumiAdmin',
             'password' => password_hash('admin123', PASSWORD_DEFAULT),
             'user_type' => '100',
             'nickname' => '创始人',
             'email' => 'admin@adminjiumi.com',
-            'phone' => '16858888988',
-            'signed' => '广阔天地，大有所为',
+            'phone' => '13785208521',
+            'signed' => '河北九米以软件开发服务为核心，提供完整的企业互联网一揽子解决方案，包括模式解析、云端管理、信息化定制、应用开发、新媒体运营等服务',
             'dashboard' => 'statistics',
             'created_by' => 0,
             'updated_by' => 0,
@@ -343,7 +343,7 @@ class InstallProjectCommand extends JiumiCommand
         Db::table('system_role')->insert([
             'id' => env('ADMIN_ROLE', 1),
             'name' => '超级管理员（创始人）',
-            'code' => 'superAdmin',
+            'code' => 'jiumiAdmin',
             'data_scope' => 0,
             'sort' => 0,
             'created_by' => env('SUPER_ADMIN', 0),
@@ -370,7 +370,7 @@ class InstallProjectCommand extends JiumiCommand
         }
         $this->line(PHP_EOL . sprintf('%s
 JiumiAdmin Version: %s
-default username: superAdmin
+default username: jiumiAdmin
 default password: admin123', $this->getInfo(), Jiumi::getVersion()), 'comment');
     }
 
