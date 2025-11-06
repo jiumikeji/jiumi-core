@@ -41,13 +41,33 @@ class Ip2region
      * @param string $ip
      * @return string
      */
+    // public function search(string $ip): string
+    // {
+    //     $region = $this->searcher->search($ip);
+
+    //     if (!$region) return t('jwt.unknown');
+
+    //     list($country, $number, $province, $city, $network) = explode('|', $region);
+    //     if ($country == '中国') {
+    //         return $province.'-'.$city.':'.$network;
+    //     } else if ($country == '0') {
+    //         return t('jwt.unknown');
+    //     } else {
+    //         return $country;
+    //     }
+    // }
     public function search(string $ip): string
     {
         $region = $this->searcher->search($ip);
 
         if (!$region) return t('jwt.unknown');
-
-        list($country, $number, $province, $city, $network) = explode('|', $region);
+//        list($country, $number, $province, $city, $network) = explode('|', $region);
+        $res=explode('|', $region);
+        $country = empty($res[0])?'0':$res[0];
+        $number = empty($res[1])?'0':$res[1];
+        $province = empty($res[2])?'':$res[2];
+        $city = empty($res[3])?'':$res[3];
+        $network = empty($res[4])?'':$res[4];
         if ($country == '中国') {
             return $province.'-'.$city.':'.$network;
         } else if ($country == '0') {
