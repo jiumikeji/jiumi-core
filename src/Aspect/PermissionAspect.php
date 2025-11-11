@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Jiumi\Aspect;
 
 use Jiumi\Interfaces\ServiceInterface\UserServiceInterface;
+use Hyperf\Context\Context;
 use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -71,40 +72,42 @@ class PermissionAspect extends AbstractAspect
      */
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if ($this->loginUser->isSuperAdmin()) {
-            return $proceedingJoinPoint->process();
-        }
-
         /** @var Permission $permission */
         if (isset($proceedingJoinPoint->getAnnotationMetadata()->method[Permission::class])) {
             $permission = $proceedingJoinPoint->getAnnotationMetadata()->method[Permission::class];
         }
-
         // 注解权限为空，则放行
         if (empty($permission->code)) {
             return $proceedingJoinPoint->process();
         }
+        $permCodes = array_map('trim', explode(",", $permission->code));
+        // 设置数据
+        Context::set('sys_perm_codes', $permCodes);
+        Context::set('sys_perm_where', $permission->where);
+        if ($this->loginUser->isSuperAdmin()) {
+            return $proceedingJoinPoint->process();
+        }
 
-        $this->checkPermission($permission->code, $permission->where);
+        $this->checkPermission($permCodes, $permission->where);
 
         return $proceedingJoinPoint->process();
     }
 
     /**
      * 检查权限
-     * @param string $codeString
+     * @param array $permCodes
      * @param string $where
      * @return bool
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    protected function checkPermission(string $codeString, string $where): bool
+    protected function checkPermission(array $permCodes, string $where): bool
     {
         $codes = $this->service->getInfo()['codes'];
 
         if ($where === 'OR') {
-            foreach (explode(',', $codeString) as $code) {
-                if (in_array(trim($code), $codes)) {
+            foreach ($permCodes as $code) {
+                if (in_array($code, $codes)) {
                     return true;
                 }
             }
@@ -114,8 +117,7 @@ class PermissionAspect extends AbstractAspect
         }
 
         if ($where === 'AND') {
-            foreach (explode(',', $codeString) as $code) {
-                $code = trim($code);
+            foreach ($permCodes as $code) {
                 if (! in_array($code, $codes)) {
                     $service = container()->get(\Jiumi\Interfaces\ServiceInterface\MenuServiceInterface::class);
                     throw new NoPermissionException(
@@ -124,7 +126,6 @@ class PermissionAspect extends AbstractAspect
                 }
             }
         }
-
         return true;
     }
 }
