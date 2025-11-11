@@ -13,6 +13,7 @@ namespace  Jiumi\Traits;
 use App\System\Model\SystemDept;
 use App\System\Model\SystemRole;
 use App\System\Model\SystemUser;
+use Hyperf\Context\Context;
 use Hyperf\Database\Model\Builder;
 use Hyperf\DbConnection\Db;
 use Jiumi\Exception\JiumiException;
@@ -55,8 +56,8 @@ trait ModelMacroTrait
                 // 查询构造器
                 protected Builder $builder;
 
-                // 数据范围用户ID列表
-                protected array $userIds = [];
+                // 用户查询语句
+                protected  $userQuery = null;
 
                 // 外部模型
                 protected mixed $model;
@@ -74,68 +75,15 @@ trait ModelMacroTrait
                 public function execute(): Builder
                 {
                     $this->getUserDataScope();
-                    return empty($this->userIds)
+                    return empty($this->userQuery)
                         ? $this->builder
-                        : $this->builder->whereIn($this->model->getDataScopeField(), array_unique($this->userIds));
+                        : $this->builder->whereIn($this->model->getDataScopeField(), $this->userQuery);
                 }
 
                 protected function getUserDataScope(): void
                 {
-                    $userModel = SystemUser::find($this->userid, ['id']);
-                    $roles = $userModel->roles()->get(['id', 'data_scope']);
-
-                    foreach ($roles as $role) {
-                        switch ($role->data_scope) {
-                            case SystemRole::ALL_SCOPE:
-                                // 如果是所有权限，跳出所有循环
-                                break 2;
-                            case SystemRole::CUSTOM_SCOPE:
-                                // 自定义数据权限
-                                $deptIds = $role->depts()->pluck('id')->toArray();
-                                $this->userIds = array_merge(
-                                    $this->userIds,
-                                    Db::table('system_user_dept')->whereIn('dept_id', $deptIds)->pluck('user_id')->toArray()
-                                );
-                                $this->userIds[] = $this->userid;
-                                break;
-                            case SystemRole::SELF_DEPT_SCOPE:
-                                // 本部门数据权限
-                                $deptIds = Db::table('system_user_dept')->where('user_id', $userModel->id)->pluck('dept_id')->toArray();
-                                $this->userIds = array_merge(
-                                    $this->userIds,
-                                    Db::table('system_user_dept')->whereIn('dept_id', $deptIds)->pluck('user_id')->toArray()
-                                );
-                                $this->userIds[] = $this->userid;
-                                break;
-                            case SystemRole::DEPT_BELOW_SCOPE:
-                                // 本部门及子部门数据权限
-                                $parentDepts = Db::table('system_user_dept')->where('user_id', $userModel->id)->pluck('dept_id')->toArray();
-                                $ids = [];
-                                foreach ($parentDepts as $deptId) {
-                                    $ids[] = SystemDept::query()
-                                        ->where(function ($query) use ($deptId) {
-                                            $query->where('id', '=', $deptId)
-                                                ->orWhere('level', 'like', $deptId . ',%')
-                                                ->orWhere('level', 'like', '%,' . $deptId)
-                                                ->orWhere('level', 'like', '%,' . $deptId . ',%');
-                                        })
-                                        ->pluck('id')
-                                        ->toArray();
-                                }
-                                $deptIds = array_merge($parentDepts, ...$ids);
-                                $this->userIds = array_merge(
-                                    $this->userIds,
-                                    Db::table('system_user_dept')->whereIn('dept_id', $deptIds)->pluck('user_id')->toArray()
-                                );
-                                $this->userIds[] = $this->userid;
-                                break;
-                            case SystemRole::SELF_SCOPE:
-                                $this->userIds[] = $this->userid;
-                                break;
-                            default:
-                                break;
-                        }
-                    }
+                    $permInfo=get_context_perm_info($this->userid);
+                    $this->userQuery=$permInfo['query'];
                 }
             };
 
