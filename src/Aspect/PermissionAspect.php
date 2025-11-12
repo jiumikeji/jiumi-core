@@ -76,14 +76,17 @@ class PermissionAspect extends AbstractAspect
         if (isset($proceedingJoinPoint->getAnnotationMetadata()->method[Permission::class])) {
             $permission = $proceedingJoinPoint->getAnnotationMetadata()->method[Permission::class];
         }
-        // 注解权限为空，则放行
-        if (empty($permission->code)) {
-            return $proceedingJoinPoint->process();
-        }
+        $code=empty($permission->code)?"":$permission->code;
         $permCodes = array_map('trim', explode(",", $permission->code));
         // 设置数据
         Context::set('sys_perm_codes', $permCodes);
         Context::set('sys_perm_where', $permission->where);
+        Context::set('sys_perm_scope', $permission->scope);
+        // 注解权限为空，则放行
+        if (empty($permCodes)) {
+            return $proceedingJoinPoint->process();
+        }
+
         if ($this->loginUser->isSuperAdmin()) {
             return $proceedingJoinPoint->process();
         }
