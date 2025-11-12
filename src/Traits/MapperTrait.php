@@ -278,7 +278,7 @@ trait MapperTrait
      */
     public function read(int $id, array $column = ['*']): ?JiumiModel
     {
-        return ($model = $this->model::find($id, $column)) ? $model : null;
+        return ($model = (new $this->model)->userDataScope()->find($id, $column)) ? $model : null;
     }
 
     /**
@@ -289,7 +289,7 @@ trait MapperTrait
      */
     public function first(array $condition, array $column = ['*']): ?JiumiModel
     {
-        return ($model = $this->model::where($condition)->first($column)) ? $model : null;
+        return ($model = (new $this->model)->userDataScope()->where($condition)->first($column)) ? $model : null;
     }
 
     /**
@@ -300,7 +300,7 @@ trait MapperTrait
      */
     public function value(array $condition, string $columns = 'id')
     {
-        return ($model = $this->model::where($condition)->value($columns)) ? $model : null;
+        return ($model = (new $this->model)->userDataScope()->where($condition)->value($columns)) ? $model : null;
     }
 
     /**
@@ -312,7 +312,7 @@ trait MapperTrait
      */
     public function pluck(array $condition, string $columns = 'id', ?string $key = null): array
     {
-        return $this->model::where($condition)->pluck($columns, $key)->toArray();
+        return (new $this->model)->userDataScope()->where($condition)->pluck($columns, $key)->toArray();
     }
 
     /**
@@ -323,7 +323,7 @@ trait MapperTrait
      */
     public function readByRecycle(int $id): ?JiumiModel
     {
-        return ($model = $this->model::withTrashed()->find($id)) ? $model : null;
+        return ($model = $this->model::withTrashed()->userDataScope()->whereNotNull('deleted_at')->find($id)) ? $model : null;
     }
 
     /**
@@ -335,11 +335,12 @@ trait MapperTrait
      */
     public function delete(array $ids): bool
     {
-        $this->model::destroy($ids);
-
-        $manager = ApplicationContext::getContainer()->get(Manager::class);
-        $manager->destroy($ids,$this->model);
-
+//        $this->model::destroy($ids);
+//
+//        $manager = ApplicationContext::getContainer()->get(Manager::class);
+//        $manager->destroy($ids,$this->model);
+        $model=$this->model::withTrashed()->userDataScope();
+        $model->whereIn((new $this->model)->getKeyName(),$ids)->update(['deleted_at' => date('Y-m-d H:i:s')]);
         return true;
     }
 
@@ -352,7 +353,8 @@ trait MapperTrait
     public function update(int $id, array $data): bool
     {
         $this->filterExecuteAttributes($data, true);
-        return $this->model::find($id)->update($data) > 0;
+        $model=(new $this->model)->userDataScope();
+        return $model->where((new $this->model)->getKeyName(),$id)->update($data) > 0;
     }
 
     /**
@@ -364,7 +366,7 @@ trait MapperTrait
     public function updateByCondition(array $condition, array $data): bool
     {
         $this->filterExecuteAttributes($data, true);
-        return $this->model::query()->where($condition)->update($data) > 0;
+        return (new $this->model)->userDataScope()->where($condition)->update($data) > 0;
     }
 
     /**
@@ -374,10 +376,8 @@ trait MapperTrait
      */
     public function realDelete(array $ids): bool
     {
-        foreach ($ids as $id) {
-            $model = $this->model::withTrashed()->find($id);
-            $model && $model->forceDelete();
-        }
+        $model= $this->model::withTrashed()->userDataScope();
+        $model->whereIn((new $this->model)->getKeyName(),$ids)->forceDelete();
         return true;
     }
 
@@ -388,7 +388,8 @@ trait MapperTrait
      */
     public function recovery(array $ids): bool
     {
-        $this->model::withTrashed()->whereIn((new $this->model)->getKeyName(), $ids)->restore();
+        $model= $this->model::withTrashed()->userDataScope();
+        $model->whereIn((new $this->model)->getKeyName(),$ids)->update(['deleted_at' => null]);
         return true;
     }
 
@@ -400,7 +401,8 @@ trait MapperTrait
      */
     public function disable(array $ids, string $field = 'status'): bool
     {
-        $this->model::query()->whereIn((new $this->model)->getKeyName(), $ids)->update([$field => $this->model::DISABLE]);
+        $model= (new $this->model)->userDataScope();
+        $model->whereIn((new $this->model)->getKeyName(), $ids)->update([$field => $this->model::DISABLE]);
         return true;
     }
 
@@ -412,7 +414,8 @@ trait MapperTrait
      */
     public function enable(array $ids, string $field = 'status'): bool
     {
-        $this->model::query()->whereIn((new $this->model)->getKeyName(), $ids)->update([$field => $this->model::ENABLE]);
+        $model= (new $this->model)->userDataScope();
+        $model->whereIn((new $this->model)->getKeyName(), $ids)->update([$field => $this->model::ENABLE]);
         return true;
     }
 
@@ -446,7 +449,8 @@ trait MapperTrait
      */
     public function settingClosure(?\Closure $closure = null): Builder
     {
-        return $this->model::where(function($query) use($closure) {
+        $model=(new $this->model)->userDataScope();
+        return $model->where(function($query) use($closure) {
             if ($closure instanceof \Closure) {
                 $closure($query);
             }
@@ -530,7 +534,7 @@ trait MapperTrait
     public function paramsEmptyQuery($params, array $where = [], mixed $query = null): mixed
     {
         if (!$query) {
-            $query = $this->model::query();
+            $query = (new $this->model)->userDataScope();
         }
 
         $object = new class($params, $where) {
@@ -603,7 +607,7 @@ trait MapperTrait
     public function emptyBuildQuery(array $paramsWhere = [], mixed $query = null): mixed
     {
         if (!$query) {
-            $query = $this->model::query();
+            $query = (new $this->model)->userDataScope();
         }
         $object = new class($paramsWhere, $query){
 
