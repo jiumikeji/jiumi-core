@@ -77,7 +77,7 @@ class PermissionAspect extends AbstractAspect
             $permission = $proceedingJoinPoint->getAnnotationMetadata()->method[Permission::class];
         }
         $code=empty($permission->code)?"":$permission->code;
-        $permCodes = array_map('trim', explode(",", $permission->code));
+        $permCodes = array_filter(array_map('trim', explode(",", $permission->code)));
         // 设置数据
         Context::set('sys_perm_codes', $permCodes);
         Context::set('sys_perm_where', $permission->where);
