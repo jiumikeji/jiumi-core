@@ -293,7 +293,7 @@ if (!function_exists('get_user_perm_info')) {
         $mainDeptId = $user['user']['dept_id'];
         //获取菜单权限对应的角色ID
         if (!is_array($permIds)) {
-            $permIdArr = array_map('trim', explode(",", $permIds));
+            $permIdArr = array_filter(array_map('trim', explode(",", $permIds)));
             if (count($permIdArr) > 1) {
                 $permIds = $permIdArr;
             }
