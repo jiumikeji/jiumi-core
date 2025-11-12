@@ -262,7 +262,7 @@ if (!function_exists('get_user_perm_info')) {
      * @param bool|null $scope 是否权限控制
      * @return array
      */
-    function get_user_perm_info(int $userId, string|array $permIds, string $where = 'OR', bool $scope = null): array
+    function get_user_perm_info(int $userId, string|array $permIds, string $where = 'OR', bool|null $scope = null): array
     {
         $result = [
             'admin' => false,
