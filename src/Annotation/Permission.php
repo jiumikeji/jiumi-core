@@ -21,6 +21,7 @@ class Permission extends AbstractAnnotation
     /**
      * @var string|null $code 菜单代码
      * @var string $where 过滤条件 为 OR 时，检查有一个通过则全部通过 为 AND 时，检查有一个不通过则全不通过
+     * @param bool $scope 是否启用作用域限制，默认为true
      */
-    public function __construct(public ?string $code = null, public string $where = 'OR') {}
+    public function __construct(public ?string $code = null, public string $where = 'OR', public bool $scope = true) {}
 }
