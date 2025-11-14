@@ -32,9 +32,12 @@ trait ModelMacroTrait
             if (! config('jiumiadmin.data_scope_enabled')) {
                 return $this;
             }
-
-            $userid = is_null($userid) ? (int) user()->getId() : $userid;
-
+            try{
+                $userid = is_null($userid) ? (int) user()->getId() : $userid;
+            }catch (\Throwable $e){
+                return $this;
+            }
+            
             if (empty($userid)) {
                 throw new JiumiException('Data Scope missing user_id');
             }
