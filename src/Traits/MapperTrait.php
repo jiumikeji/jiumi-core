@@ -335,12 +335,13 @@ trait MapperTrait
      */
     public function delete(array $ids): bool
     {
-//        $this->model::destroy($ids);
-//
-//        $manager = ApplicationContext::getContainer()->get(Manager::class);
-//        $manager->destroy($ids,$this->model);
-        $model=$this->model::withTrashed()->userDataScope();
-        $model->whereIn((new $this->model)->getKeyName(),$ids)->update(['deleted_at' => date('Y-m-d H:i:s')]);
+        if (method_exists($this->model, 'withTrashed')) {
+            $model = $this->model::withTrashed()->userDataScope();
+            $model->whereIn((new $this->model)->getKeyName(),$ids)->update(['deleted_at' => date('Y-m-d H:i:s')]);
+        }else{
+            $model=(new $this->model)->userDataScope();
+            $model->whereIn((new $this->model)->getKeyName(),$ids)->forceDelete();
+        }
         return true;
     }
 
@@ -376,8 +377,13 @@ trait MapperTrait
      */
     public function realDelete(array $ids): bool
     {
-        $model= $this->model::withTrashed()->userDataScope();
-        $model->whereIn((new $this->model)->getKeyName(),$ids)->forceDelete();
+        if (method_exists($this->model, 'withTrashed')) {
+            $model= $this->model::withTrashed()->userDataScope();
+            $model->whereIn((new $this->model)->getKeyName(),$ids)->forceDelete();
+        }else{
+            $model=(new $this->model)->userDataScope();
+            $model->whereIn((new $this->model)->getKeyName(),$ids)->forceDelete();
+        }
         return true;
     }
 
