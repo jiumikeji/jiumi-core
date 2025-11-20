@@ -354,8 +354,9 @@ trait MapperTrait
     public function update(int $id, array $data): bool
     {
         $this->filterExecuteAttributes($data, true);
-        $model=(new $this->model)->userDataScope();
-        return $model->where((new $this->model)->getKeyName(),$id)->update($data) > 0;
+        $model=(new $this->model)->userDataScope()->find($id);
+        if (!$model) return false;
+        return $model->update($data) > 0;
     }
 
     /**
